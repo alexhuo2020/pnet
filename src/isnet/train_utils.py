@@ -20,9 +20,9 @@ from tqdm import tqdm
 import json
 
 
-from llama_recipes.model_checkpointing import save_model_checkpoint, save_model_and_optimizer_sharded, save_optimizer_checkpoint
-from llama_recipes.policies import fpSixteen,bfSixteen, get_llama_wrapper
-from llama_recipes.utils.memory_utils import MemoryTrace
+from isnet.utils import save_model_checkpoint, save_model_and_optimizer_sharded, save_optimizer_checkpoint
+from isnet.utils import fpSixteen,bfSixteen
+from isnet.utils import MemoryTrace
 from accelerate.utils import is_xpu_available, is_ccl_available
 
 
