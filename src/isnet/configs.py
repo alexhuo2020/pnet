@@ -36,7 +36,7 @@ class data_config:
 @dataclass
 class train_config:
     model_name: str="elliptic"
-    enable_fsdp: bool=False
+    enable_fsdp: bool=True
     enable_ddp: bool=False
     low_cpu_fsdp: bool=False
     run_validation: bool=False
