@@ -7,7 +7,8 @@ from isnet.configs import model_config, data_config, train_config, eq_config
 from isnet.models import MODELS, load_model
 from isnet.equations import load_equation
 from isnet.models_transformer import Model_GPT
-from isnet.models_gpt import GPT, GPTConfig
+from isnet.models_gpt import GPT#, GPTConfig
+from isnet.configs import GPTConfig
 from transformers import GPT2Config 
 from isnet.dataset import load_dataset
 
