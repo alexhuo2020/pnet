@@ -104,16 +104,22 @@ def main(**kwargs):
                 models = MODELS(load_model(model_config))
                 models.configure_optimizers(train_config)
             elif model_config.names == "GPT":
-                models.unet = GPT(GPTConfig)
-                models.vnet = GPT(GPTConfig)
+                unet = GPT(GPTConfig)
+                vnet = GPT(GPTConfig)
+                models = MODELS((unet,vnet))
+                models.configure_optimizers(train_config)
+
     else:
         if model_config.names == "MLP":
             models = MODELS(load_model(model_config))
             models.configure_optimizers(train_config)
         elif model_config.names == "GPT":
-            models.unet = GPT(GPTConfig)
-            models.vnet = GPT(GPTConfig)
-            models.optimizers = (models.unet.configure_optimizers(train_config), models.vnet.configure_optimizers(train_config))
+            unet = GPT(GPTConfig)
+            vnet = GPT(GPTConfig)
+            models = MODELS((unet,vnet))
+            models.configure_optimizers(train_config)
+
+            # models.optimizers = (models.unet.configure_optimizers(train_config), models.vnet.configure_optimizers(train_config))
 
     print_model_size(models.unet, train_config, rank if train_config.enable_fsdp else 0)
 
