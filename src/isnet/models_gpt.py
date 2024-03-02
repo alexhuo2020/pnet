@@ -10,17 +10,7 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 
-@dataclass
-class GPTConfig:
-    block_size: int = 1#00
-    vocab_size: int = 2 # GPT-2 vocab_size of 50257, padded up to nearest multiple of 64 for efficiency
-    n_layer: int = 2
-    n_head: int = 4
-    n_embd: int = 8#128
-    # n_embd: int = 128
-    dropout: float = 0.
-    bias: bool = True # True: bias in Linears and LayerNorms, like GPT-2. False: a bit better and faster
-    out_d: int=1
+
 
 
 class LayerNorm(nn.Module):

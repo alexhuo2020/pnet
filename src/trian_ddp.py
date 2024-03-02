@@ -8,8 +8,8 @@ from isnet.models import MODELS, load_model
 from isnet.equations import load_equation
 from isnet.models_gpt import GPT 
 from isnet.configs import GPTConfig
-# from isnet.models_transformer import GPT, GPTConfig
 from isnet.dataset import load_dataset
+
 
 import os
 from pkg_resources import packaging
@@ -18,36 +18,12 @@ import fire
 import random
 import torch
 import torch.optim as optim
-from peft import get_peft_model, prepare_model_for_int8_training
-from torch.distributed.fsdp import (
-    FullyShardedDataParallel as FSDP,
-)
-from torch.distributed.fsdp.fully_sharded_data_parallel import CPUOffload
 from torch.optim.lr_scheduler import StepLR
-# from transformers import ( # TRANSFORMER NOT USED HERE
-#     LlamaForCausalLM,
-#     LlamaTokenizer,
-#     LlamaConfig,
-# )
-# from transformers.models.llama.modeling_llama import LlamaDecoderLayer
 
-from llama_recipes.configs import fsdp_config as FSDP_CONFIG
-# from llama_recipes.configs import train_config as TRAIN_CONFIG
-# from llama_recipes.data.concatenator import ConcatDataset
-from llama_recipes.policies import AnyPrecisionAdamW, apply_fsdp_checkpointing
+from isnet.configs import train_config, fsdp_config
 
-from llama_recipes.utils import fsdp_auto_wrap_policy
-from llama_recipes.utils.config_utils import (
-    update_config,
-    generate_peft_config,
-    generate_dataset_config,
-    # get_dataloader_kwargs,
-)
-from llama_recipes.utils.dataset_utils import get_preprocessed_dataset
-
-from isnet.train_utils import (
+from isnet.train_multi import (
     train,
-    freeze_transformer_layers,
     setup,
     setup_environ_flags,
     clear_gpu_cache,
@@ -59,8 +35,8 @@ from accelerate.utils import is_xpu_available
 def main(**kwargs):
     # Update the configuration for the training and sharding process
     # train_config, fsdp_config = TRAIN_CONFIG(), FSDP_CONFIG()
-    fsdp_config = FSDP_CONFIG()
-    update_config((train_config, fsdp_config), **kwargs)
+    # fsdp_config = FSDP_CONFIG()
+    # update_config((train_config, fsdp_config), **kwargs)
 
     # Set the seeds for reproducibility
     if is_xpu_available():
@@ -70,7 +46,7 @@ def main(**kwargs):
     torch.manual_seed(train_config.seed)
     random.seed(train_config.seed)
 
-    if train_config.enable_fsdp:
+    if train_config.enable_fsdp or train_config.enable_ddp:
         setup()
         # torchrun specific
         local_rank = int(os.environ["LOCAL_RANK"])
@@ -106,6 +82,7 @@ def main(**kwargs):
             elif model_config.names == "GPT":
                 models.unet = GPT(GPTConfig)
                 models.vnet = GPT(GPTConfig)
+                models.optimizers = (models.unet.configure_optimizers(train_config), models.vnet.configure_optimizers(train_config))
     else:
         if model_config.names == "MLP":
             models = MODELS(load_model(model_config))
@@ -153,8 +130,8 @@ def main(**kwargs):
             param_init_fn=lambda module: module.to_empty(device=torch.device("cuda"), recurse=False)
             if train_config.low_cpu_fsdp and rank != 0 else None,
         )
-        if fsdp_config.fsdp_activation_checkpointing:
-            apply_fsdp_checkpointing(models.unet)
+        # if fsdp_config.fsdp_activation_checkpointing:
+        #     apply_fsdp_checkpointing(models.unet)
     elif not train_config.quantization and not train_config.enable_fsdp:
         if is_xpu_available():
             models.unet.to("xpu:0")
