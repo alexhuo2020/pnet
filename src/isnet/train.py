@@ -38,9 +38,10 @@ def train(models, eq, train_dataloaders, eval_dataloaders, optimizers, lr_schedu
             optimizers.optim_v.step()
             optimizers.optim_v.zero_grad()
             
-            pbar.update(1)
             err = eq.compute_err(models.unet,batch['x'])
             pbar.set_description(f"Training Epoch: {epoch+1}/{train_config.num_epochs}, step {step}/{len(train_dataloaders[0])} completed (loss: {loss.detach().float()}, error: {err.item()})")
+            pbar.update(1)
+
             if train_config.save_metrics:
                 save_to_json(metrics_filename, train_step_loss, train_loss)
         pbar.close()
