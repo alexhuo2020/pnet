@@ -98,6 +98,7 @@ def main(**kwargs):
         optimizers,
         schedulers,
         train_config,
+        device=train_config.device
     )
 
 if __name__ == "__main__":

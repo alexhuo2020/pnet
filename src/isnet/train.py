@@ -1,7 +1,7 @@
 import torch 
 from tqdm import tqdm
 import time 
-def train(models, eq, train_dataloaders, eval_dataloaders, optimizers, lr_schedulers, train_config, device = "mps"):
+def train(models, eq, train_dataloaders, eval_dataloaders, optimizers, lr_schedulers, train_config, device = "cpu"):
     train_loss = []
     val_loss = []
     if train_config.save_metrics:
