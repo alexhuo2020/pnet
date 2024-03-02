@@ -2,8 +2,8 @@ from dataclasses import dataclass
 
 @dataclass
 class GPTConfig:
-    vocab_size: int = 2 # dimension of the problem
-    n_layer: int = 2
+    vocab_size: int = 5 # dimension of the problem
+    n_layer: int = 4
     n_head: int = 4
     n_embd: int = 128
     dropout: float = 0.
@@ -13,7 +13,7 @@ class GPTConfig:
 
 class eq_config:
     name: int = "Poisson"
-    d: int = 2
+    d: int = 5
 
 class model_config:
     names = "GPT"
@@ -23,10 +23,10 @@ class model_config:
 
 class data_config:
     name = 'box'
-    num_int: int = 10000
-    num_ext: int = 100
+    num_int: int = 100000
+    num_ext: int = 1000
     batch_size: int = 1000
-    d: int = 2
+    d: int = 5
     box_low: float = -1.0
     box_high: float = 1.0
 
