@@ -19,7 +19,7 @@ class model_config:
     names = "GPT"
     hdim: int = 50
     depth: int = 2
-    d: int = 2
+    d: int = 5
 
 class data_config:
     name = 'box'
