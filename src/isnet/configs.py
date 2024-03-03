@@ -7,7 +7,7 @@ class GPTConfig:
     vocab_size: int = 5 # GPT-2 vocab_size of 50257, padded up to nearest multiple of 64 for efficiency
     n_layer: int = 4
     n_head: int = 4
-    n_embd: int = 512 #128
+    n_embd: int = 128 #128
     # n_embd: int = 128
     dropout: float = 0.
     bias: bool = True # True: bias in Linears and LayerNorms, like GPT-2. False: a bit better and faster
