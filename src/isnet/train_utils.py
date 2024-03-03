@@ -214,7 +214,7 @@ def train(models, eq, train_dataloaders, eval_dataloaders, optimizers, lr_schedu
                     print(f"Max CUDA memory allocated was {memtrace.peak} GB")
                     print(f"Max CUDA memory reserved was {memtrace.max_reserved} GB")
                     print(f"Peak active CUDA memory was {memtrace.peak_active_gb} GB")
-                    print(f"Cuda Malloc retires : {memtrace.cuda_malloc_retires}")
+                    # print(f"Cuda Malloc retires : {memtrace.cuda_malloc_retires}")
                 print(f"CPU Total Peak Memory consumed during the train (max): {memtrace.cpu_peaked + memtrace.cpu_begin} GB")
         else:
             if is_xpu_available():
