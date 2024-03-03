@@ -21,8 +21,8 @@ import torch.optim as optim
 # from peft import get_peft_model, prepare_model_for_int8_training
 from torch.distributed.fsdp import (
     FullyShardedDataParallel as FSDP,
-    DistributedDataParallel as DDP
 )
+from torch.distributed import DistributedDataParallel as DDP
 from torch.distributed.fsdp.fully_sharded_data_parallel import CPUOffload
 from torch.optim.lr_scheduler import StepLR
 # from transformers import ( # TRANSFORMER NOT USED HERE
