@@ -1,14 +1,9 @@
-# Copyright (c) Meta Platforms, Inc. and affiliates.
-# This software may be used and distributed according to the terms of the Llama 2 Community License Agreement.
-
-
 import torch 
 from isnet.configs import model_config, data_config, train_config, eq_config
 from isnet.models import MODELS, load_model
 from isnet.equations import load_equation
 from isnet.models_gpt import GPT 
 from isnet.configs import GPTConfig
-# from isnet.models_transformer import GPT, GPTConfig
 from isnet.dataset import load_dataset
 
 import os
@@ -25,26 +20,6 @@ from torch.distributed.fsdp import (
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.distributed.fsdp.fully_sharded_data_parallel import CPUOffload
 from torch.optim.lr_scheduler import StepLR
-# from transformers import ( # TRANSFORMER NOT USED HERE
-#     LlamaForCausalLM,
-#     LlamaTokenizer,
-#     LlamaConfig,
-# )
-# from transformers.models.llama.modeling_llama import LlamaDecoderLayer
-
-# from llama_recipes.configs import fsdp_config as FSDP_CONFIG
-# # from llama_recipes.configs import train_config as TRAIN_CONFIG
-# # from llama_recipes.data.concatenator import ConcatDataset
-# from llama_recipes.policies import AnyPrecisionAdamW, apply_fsdp_checkpointing
-
-# from llama_recipes.utils import fsdp_auto_wrap_policy
-# from llama_recipes.utils.config_utils import (
-#     update_config,
-#     generate_peft_config,
-#     generate_dataset_config,
-#     # get_dataloader_kwargs,
-# )
-# from llama_recipes.utils.dataset_utils import get_preprocessed_dataset
 
 from isnet.train_utils import (
     train,
@@ -71,7 +46,7 @@ def main(**kwargs):
     torch.manual_seed(train_config.seed)
     random.seed(train_config.seed)
 
-    if train_config.enable_fsdp:
+    if train_config.enable_fsdp or train_config.ddp:
         setup()
         # torchrun specific
         local_rank = int(os.environ["LOCAL_RANK"])
@@ -120,9 +95,8 @@ def main(**kwargs):
             unet = GPT(GPTConfig)
             vnet = GPT(GPTConfig)
             models = MODELS((unet,vnet))
-            # models.configure_optimizers(train_config)
-
-            models.optimizers = (models.unet.configure_optimizers(train_config), models.vnet.configure_optimizers(train_config))
+            models.configure_optimizers(train_config)
+            # models.optimizers = (models.unet.configure_optimizers(train_config), models.vnet.configure_optimizers(train_config))
 
     print_model_size(models.unet, train_config, rank if train_config.enable_fsdp else 0)
 
@@ -233,7 +207,7 @@ def main(**kwargs):
     class op():
         pass 
     optimizers = op()
-    optimizers.optim_u, optimizers.optim_v = models.optimizers#models.optim_u, models.optim_v
+    optimizers.optim_u, optimizers.optim_v = models.optim_u, models.optim_v
 
     # Initialize the optimizer and learning rate scheduler
     if fsdp_config.pure_bf16 and fsdp_config.optimizer == "anyprecision":
