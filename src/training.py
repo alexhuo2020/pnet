@@ -150,6 +150,8 @@ def main(**kwargs):
         my_auto_wrapping_policy = None #fsdp_auto_wrap_policy(models.unet, LlamaDecoderLayer) #NOT IMPLEMENTED
 
         fsdp_config.fsdp_cpu_offload = False
+        models.unet.to(rank)
+        models.vnet.to(rank)
         models.unet = DDP(models.unet)
         models.vnet = DDP(models.vnet)
         # models.unet = FSDP(
