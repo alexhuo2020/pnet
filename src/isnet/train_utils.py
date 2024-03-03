@@ -104,6 +104,8 @@ def train(models, eq, train_dataloaders, eval_dataloaders, optimizers, lr_schedu
                     # loss = torch.sum(models.unet(batch['x']))
                     loss = models.loss_u(batch, eq)
                     # print(loss)
+                    err = eq.compute_err(models.unet,batch['x'])
+
                 loss = loss / gradient_accumulation_steps
                 if train_config.save_metrics:
                     train_step_loss.append(loss.detach().float().item())
@@ -139,7 +141,7 @@ def train(models, eq, train_dataloaders, eval_dataloaders, optimizers, lr_schedu
                         print("optimzer updated")
                         optimizers.optim_u.zero_grad()
                         pbar.update(1)
-                pbar.set_description(f"Training Epoch: {epoch+1}/{train_config.num_epochs}, step {step}/{len(train_dataloaders[0])} completed (loss: {loss.detach().float()})")
+                pbar.set_description(f"Training Epoch: {epoch+1}/{train_config.num_epochs}, step {step}/{len(train_dataloaders[0])} completed (loss: {loss.detach().float()}, error: {err.detach().float()})")
                 if train_config.save_metrics:
                     save_to_json(metrics_filename, train_step_loss, train_loss, train_step_perplexity, train_prep, val_step_loss, val_loss, val_step_perplexity, val_prep)
                 
