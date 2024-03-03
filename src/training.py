@@ -207,7 +207,7 @@ def main(**kwargs):
     class op():
         pass 
     optimizers = op()
-    optimizers.optim_u, optimizers.optim_v = models.optimizers#models.optim_u, models.optim_v
+    optimizers.optim_u, optimizers.optim_v = models.optim_u, models.optim_v
 
     # Initialize the optimizer and learning rate scheduler
     if fsdp_config.pure_bf16 and fsdp_config.optimizer == "anyprecision":
