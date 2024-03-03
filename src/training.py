@@ -95,6 +95,7 @@ def main(**kwargs):
             unet = GPT(GPTConfig)
             vnet = GPT(GPTConfig)
             models = MODELS((unet,vnet))
+            print(models.unet)
             models.configure_optimizers(train_config)
             # models.optimizers = (models.unet.configure_optimizers(train_config), models.vnet.configure_optimizers(train_config))
 
