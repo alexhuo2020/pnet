@@ -18,7 +18,7 @@ class eq_config:
     d: int = 5
 
 class model_config:
-    names = "GPT"
+    names = "MLP"
     hdim: int = 50
     depth: int = 2
     d: int = 5
