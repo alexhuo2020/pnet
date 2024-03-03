@@ -126,8 +126,8 @@ def main(**kwargs):
         fsdp_config.fsdp_cpu_offload = False
         models.unet.to(rank)
         models.vnet.to(rank)
-        models.unet = DDP(models.unet,find_unused_parameters=True,device_ids=[rank])
-        models.vnet = DDP(models.vnet,find_unused_parameters=True,device_ids=[rank])
+        models.unet = DDP(models.unet,device_ids=[rank]) #find_unused_parameters=True
+        models.vnet = DDP(models.vnet,device_ids=[rank]) #find_unused_parameters=True
         # models.unet = FSDP(
         #     models.unet,
         #     auto_wrap_policy= my_auto_wrapping_policy if train_config.use_peft else wrapping_policy,
