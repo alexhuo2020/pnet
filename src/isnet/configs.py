@@ -18,7 +18,7 @@ class eq_config:
     d: int = 5
 
 class model_config:
-    names = "MLP"
+    names = "GPT"
     hdim: int = 200
     depth: int = 4
     d: int = 5
@@ -49,7 +49,7 @@ class train_config:
     gradient_clipping_threshold: float = 1.0
     num_epochs: int=10000
     num_workers_dataloader: int=1
-    lr: float=1e-4
+    lr: float=1e-5
     weight_decay: float=0.0
     gamma: float= 0.2 #0.85
     seed: int=42
