@@ -20,7 +20,7 @@ class eq_config:
 class model_config:
     names = "MLP"
     hdim: int = 50
-    depth: int = 2
+    depth: int = 4
     d: int = 5
 
 class data_config:

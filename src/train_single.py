@@ -28,7 +28,7 @@ def main(**kwargs):
     # class a:
     #     pass
     # models = a()
-    train_config.device='cuda'
+    train_config.device='cpu'
     print(model_config.names)
     if model_config.names == "MLP":
         models = MODELS(load_model(model_config, train_config.device))

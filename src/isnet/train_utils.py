@@ -129,16 +129,16 @@ def train(models, eq, train_dataloaders, eval_dataloaders, optimizers, lr_schedu
                 else:
                     # regular backpropagation when fp16 is not used
                     loss.backward()
-                    print("loss backwarded")
+                    # print("loss backwarded")
                     if (step + 1) % gradient_accumulation_steps == 0 or step == len(train_dataloaders[0]) - 1:
                         # if train_config.gradient_clipping and train_config.gradient_clipping_threshold > 0.0:
                         #     if train_config.enable_fsdp:
                         #         models.unet.clip_grad_norm_(train_config.gradient_clipping_threshold)
                         #     else:
                         #         torch.nn.utils.clip_grad_norm_(models.unet.parameters(), train_config.gradient_clipping_threshold)
-                        print("optimzer to update")
+                        # print("optimzer to update")
                         optimizers.optim_u.step()
-                        print("optimzer updated")
+                        # print("optimzer updated")
                         optimizers.optim_u.zero_grad()
                         pbar.update(1)
                 if rank == 0:
@@ -152,7 +152,7 @@ def train(models, eq, train_dataloaders, eval_dataloaders, optimizers, lr_schedu
                 ############################################
                     # Train of vnet begins here
                 ############################################
-                print("Train VNET")
+                # print("Train VNET")
                 models.vnet.train()
                 with autocast():
                     loss_v = models.loss_v(batch, eq)
