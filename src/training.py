@@ -161,8 +161,8 @@ def main(**kwargs):
             param_init_fn=lambda module: module.to_empty(device=torch.device("cuda"), recurse=False)
             if train_config.low_cpu_fsdp and rank != 0 else None,
         )
-        if fsdp_config.fsdp_activation_checkpointing:
-            apply_fsdp_checkpointing(models.unet)
+        # if fsdp_config.fsdp_activation_checkpointing:
+        #     apply_fsdp_checkpointing(models.unet)
     elif not train_config.quantization and not train_config.enable_fsdp:
         if is_xpu_available():
             models.unet.to("xpu:0")
