@@ -101,9 +101,9 @@ def train(models, eq, train_dataloaders, eval_dataloaders, optimizers, lr_schedu
                             batch[key] = batch[key].to('cuda:0')     
                 batch['x'].requires_grad=True
                 with autocast():
-                    loss = torch.sum(models.unet(batch['x']))
-                    # loss = models.loss_u(batch, eq)
-                    print(loss)
+                    # loss = torch.sum(models.unet(batch['x']))
+                    loss = models.loss_u(batch, eq)
+                    # print(loss)
                 loss = loss / gradient_accumulation_steps
                 if train_config.save_metrics:
                     train_step_loss.append(loss.detach().float().item())
