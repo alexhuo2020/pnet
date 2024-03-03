@@ -98,7 +98,8 @@ def main(**kwargs):
             models.configure_optimizers(train_config)
             # models.optimizers = (models.unet.configure_optimizers(train_config), models.vnet.configure_optimizers(train_config))
 
-    print_model_size(models.unet, train_config, rank if train_config.enable_fsdp else 0)
+    if rank ==0:
+        print_model_size(models.unet, train_config, rank if train_config.enable_fsdp else 0)
 
     # Prepare the model for int8 training if quantization is enabled
     # if train_config.quantization: # NOT IMPLEMENTED YET
@@ -115,17 +116,17 @@ def main(**kwargs):
     #     model.print_trainable_parameters()
 
     #setting up FSDP if enable_fsdp is enabled
-    if train_config.enable_fsdp:
+    if train_config.enable_ddp:
         # if not train_config.use_peft and train_config.freeze_layers: # NOT IMPLEMENTED
 
             # freeze_transformer_layers(train_config.num_freeze_layers)
 
-        mixed_precision_policy, wrapping_policy = get_policies(fsdp_config, rank)
-        my_auto_wrapping_policy = None #fsdp_auto_wrap_policy(models.unet, LlamaDecoderLayer) #NOT IMPLEMENTED
+        # mixed_precision_policy, wrapping_policy = get_policies(fsdp_config, rank)
+        # my_auto_wrapping_policy = None #fsdp_auto_wrap_policy(models.unet, LlamaDecoderLayer) #NOT IMPLEMENTED
 
         fsdp_config.fsdp_cpu_offload = False
-        models.unet.to(rank)
-        models.vnet.to(rank)
+        models.unet.to(rank,device_ids=[rank])
+        models.vnet.to(rank,device_ids=[rank])
         models.unet = DDP(models.unet,find_unused_parameters=True)
         models.vnet = DDP(models.vnet,find_unused_parameters=True)
         # models.unet = FSDP(
