@@ -22,7 +22,7 @@ import torch.optim as optim
 from torch.distributed.fsdp import (
     FullyShardedDataParallel as FSDP,
 )
-from torch.distributed import DistributedDataParallel as DDP
+from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.distributed.fsdp.fully_sharded_data_parallel import CPUOffload
 from torch.optim.lr_scheduler import StepLR
 # from transformers import ( # TRANSFORMER NOT USED HERE
