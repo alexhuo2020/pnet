@@ -41,7 +41,7 @@ class train_config:
     enable_ddp: bool=False
     low_cpu_fsdp: bool=False
     run_validation: bool=False
-    batch_size: int=1000
+    batch_size: int=100000
     batching_strategy: str="packing" #alternative: padding
     context_length: int=4096
     gradient_accumulation_steps: int=1
