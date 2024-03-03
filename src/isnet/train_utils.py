@@ -141,7 +141,8 @@ def train(models, eq, train_dataloaders, eval_dataloaders, optimizers, lr_schedu
                         print("optimzer updated")
                         optimizers.optim_u.zero_grad()
                         pbar.update(1)
-                pbar.set_description(f"Training Epoch: {epoch+1}/{train_config.num_epochs}, step {step}/{len(train_dataloaders[0])} completed (loss: %.4f, error: %.4f)"%(loss.detach().float(),err.detach().float()))
+                if rank == 0:
+                    pbar.set_description(f"Training Epoch: {epoch+1}/{train_config.num_epochs}, step {step}/{len(train_dataloaders[0])} completed (loss: %.4f, error: %.4f)"%(loss.detach().float(),err.detach().float()))
 
                 # pbar.set_description(f"Training Epoch: {epoch+1}/{train_config.num_epochs}, step {step}/{len(train_dataloaders[0])} completed (loss: {loss.detach().float()}, error: {err.detach().float()})")
                 if train_config.save_metrics:
