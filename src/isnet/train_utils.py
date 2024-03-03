@@ -24,7 +24,7 @@ from isnet.utils import save_model_checkpoint, save_model_and_optimizer_sharded,
 from isnet.utils import fpSixteen,bfSixteen
 from isnet.utils import MemoryTrace
 from accelerate.utils import is_xpu_available, is_ccl_available
-from isnet.utils import get_llama_wrapper
+from isnet.utils import get_llama_wrapper, apply_fsdp_checkpointing
 
 # Converting Bytes to Megabytes
 def byte2mb(x):
