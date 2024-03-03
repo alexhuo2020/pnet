@@ -21,6 +21,7 @@ import torch.optim as optim
 # from peft import get_peft_model, prepare_model_for_int8_training
 from torch.distributed.fsdp import (
     FullyShardedDataParallel as FSDP,
+    DistributedDataParallel as DDP
 )
 from torch.distributed.fsdp.fully_sharded_data_parallel import CPUOffload
 from torch.optim.lr_scheduler import StepLR
@@ -149,18 +150,20 @@ def main(**kwargs):
         my_auto_wrapping_policy = None #fsdp_auto_wrap_policy(models.unet, LlamaDecoderLayer) #NOT IMPLEMENTED
 
         fsdp_config.fsdp_cpu_offload = False
-        models.unet = FSDP(
-            models.unet,
-            auto_wrap_policy= my_auto_wrapping_policy if train_config.use_peft else wrapping_policy,
-            cpu_offload=CPUOffload(offload_params=True) if fsdp_config.fsdp_cpu_offload else None,
-            mixed_precision=mixed_precision_policy if not fsdp_config.pure_bf16 else None,
-            sharding_strategy=fsdp_config.sharding_strategy,
-            device_id=torch.xpu.current_device() if is_xpu_available() else torch.cuda.current_device(),
-            limit_all_gathers=True,
-            sync_module_states=train_config.low_cpu_fsdp,
-            param_init_fn=lambda module: module.to_empty(device=torch.device("cuda"), recurse=False)
-            if train_config.low_cpu_fsdp and rank != 0 else None,
-        )
+        models.unet = DDP(models.unet)
+        models.vnet = DDP(models.vnet)
+        # models.unet = FSDP(
+        #     models.unet,
+        #     auto_wrap_policy= my_auto_wrapping_policy if train_config.use_peft else wrapping_policy,
+        #     cpu_offload=CPUOffload(offload_params=True) if fsdp_config.fsdp_cpu_offload else None,
+        #     mixed_precision=mixed_precision_policy if not fsdp_config.pure_bf16 else None,
+        #     sharding_strategy=fsdp_config.sharding_strategy,
+        #     device_id=torch.xpu.current_device() if is_xpu_available() else torch.cuda.current_device(),
+        #     limit_all_gathers=True,
+        #     sync_module_states=train_config.low_cpu_fsdp,
+        #     param_init_fn=lambda module: module.to_empty(device=torch.device("cuda"), recurse=False)
+        #     if train_config.low_cpu_fsdp and rank != 0 else None,
+        # )
         # if fsdp_config.fsdp_activation_checkpointing:
         #     apply_fsdp_checkpointing(models.unet)
     elif not train_config.quantization and not train_config.enable_fsdp:
