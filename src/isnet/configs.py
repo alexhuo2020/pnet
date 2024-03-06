@@ -4,10 +4,10 @@ from dataclasses import dataclass
 @dataclass
 class GPTConfig:
     block_size: int = 1#00
-    vocab_size: int = 5 # GPT-2 vocab_size of 50257, padded up to nearest multiple of 64 for efficiency
-    n_layer: int = 4
+    vocab_size: int = 2 # GPT-2 vocab_size of 50257, padded up to nearest multiple of 64 for efficiency
+    n_layer: int = 2
     n_head: int = 4
-    n_embd: int = 128 #128
+    n_embd: int = 64 #128
     # n_embd: int = 128
     dropout: float = 0.
     bias: bool = True # True: bias in Linears and LayerNorms, like GPT-2. False: a bit better and faster
@@ -15,20 +15,20 @@ class GPTConfig:
 
 class eq_config:
     name: int = "Poisson"
-    d: int = 5
+    d: int = 2
 
 class model_config:
     names = "GPT"
-    hdim: int = 200
-    depth: int = 4
-    d: int = 5
+    hdim: int = 100
+    depth: int = 2
+    d: int = 2
 
 class data_config:
     name = 'box'
-    num_int: int = 100000
-    num_ext: int = 1000
+    num_int: int = 10000
+    num_ext: int = 100
     batch_size: int = 1000
-    d: int = 5
+    d: int = 2
     box_low: float = -1.0
     box_high: float = 1.0
 
@@ -49,7 +49,7 @@ class train_config:
     gradient_clipping_threshold: float = 1.0
     num_epochs: int=10000
     num_workers_dataloader: int=1
-    lr: float=1e-5
+    lr: float=1e-4
     weight_decay: float=0.0
     gamma: float= 0.2 #0.85
     seed: int=42
@@ -70,7 +70,7 @@ class train_config:
     save_optimizer: bool=False # will be used if using FSDP
     use_fast_kernels: bool = False # Enable using SDPA from PyTroch Accelerated Transformers, make use Flash Attention and Xformer memory-efficient kernels
     save_metrics: bool = False # saves training metrics to a json file for later plotting
-    lr_step_size: int = 100#5000
+    lr_step_size: int = 5000
 
 
 # Copyright (c) Meta Platforms, Inc. and affiliates.
